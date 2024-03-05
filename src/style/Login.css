@@ -1,0 +1,169 @@
+/* Login.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('/public/Trial-Login.png');
+    background-size: auto; 
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+  }
+  
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }
+  .tital {
+    text-align: center; 
+    margin-top: 0px; 
+  }
+  
+  .Snappy {
+    font-size: 40px; 
+    font-family: 'Racing Sans One', sans-serif; 
+    background: linear-gradient(90deg, #254AA9 50%, #1F8F16 50%); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    letter-spacing: 5%; 
+  }
+  
+  .subtital {
+    font-size: 14px; 
+    font-family: 'Racing Sans One', sans-serif;  
+    color: #254AA9; 
+}
+
+
+.log{
+    margin-top: 18%;
+    font-family: 'Algreya Sans', sans-serif; 
+    font-size: 20px; 
+    text-align: center; 
+    background: linear-gradient(90deg, #254AA9 50%, #1F8F16 50%); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    text-decoration: underline;
+  
+}
+.login-form {
+    width: 487px;
+    height: 475px;
+    padding: 20px; 
+    background-color: rgba(249, 249, 249, 0.8);
+    border-radius: 8px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .mobile-number-container {
+    display: flex;
+    margin-top: 50px;
+   
+  }
+  
+  .country-code-select {
+    width: 15%;
+    margin-right: 18px;
+    font-size: 13px;
+  }
+  
+  .select {
+    width: 81px;
+    height: 25px;
+    margin-top: 49%;
+    font-size: 13px;
+    margin-left: 36%;
+}
+  
+  .mobile-number-input {
+    width: 70%;
+    
+  }
+  
+  .mobile-number-input label {
+    display: block;
+    margin-bottom: 5px;
+    margin-left: -18%;
+    color: #6785D1;
+    font-size: 14px;
+  }
+  
+  .mobile-number-input input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    margin-left: 7%;
+  }
+  
+ 
+  .subtital-2{
+    font-weight: bold;
+    margin-top: 18%;
+    font-family: 'Algreya Sans', sans-serif; 
+    font-size: 20px; 
+    text-align: center; 
+    background: linear-gradient(60deg, #254AA9 50%, #1F8F16 50%); 
+    -webkit-background-clip: text; 
+    -webkit-text-fill-color: transparent; 
+    text-decoration: underline;
+  
+}
+.otp-input label {
+    margin-top: 10%;
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 15%;
+    color: #1F8F16;
+    font-size: 14px;
+  }
+  
+  .otp-input {
+    margin-top: 10px;
+    margin-left: 15%;
+  }
+  
+ 
+  .otp-input input[type="text"] {
+    width: 50px; 
+    padding: 10px; 
+    margin-right: 5px; 
+    font-size: 16px; 
+    text-align: center; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+  }
+  
+  
+  .otp-input input[type="text"]:focus {
+    outline: none; 
+    border-color: #007bff; 
+  }
+  
+  .resend {
+    text-align: center; 
+    margin-top: 7%; 
+    font-size: 14px; 
+    color: #6785D1; 
+    
+    cursor: pointer; 
+  }
+
+button {
+    margin-top: 8% !important;
+    width: 55%;
+    padding: 10px;
+    background-color: #6785D1 !important;
+    color: #ffffff;
+    
+    cursor: pointer;
+    border-radius: 6px;
+    display: block; 
+    margin: 0 auto; 
+  }
+  
+  
+ 
+  
