@@ -1,7 +1,18 @@
 let isLogin = false;
+let custId = "";
+let cust
 
-function toggleLoginStatus() {
+
+
+const toggleLoginStatus = ()=>{
   isLogin = !isLogin;
 }
 
-export { isLogin, toggleLoginStatus };
+const setCust =(value)=>{
+  cust = value;
+}
+const getValue = () =>{
+  return [custId,cust];
+}
+
+export { isLogin, toggleLoginStatus,getValue,setCust};

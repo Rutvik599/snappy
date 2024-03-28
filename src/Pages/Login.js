@@ -1,100 +1,344 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../style/Login.css"; // Import CSS file with corrected path
+import { useNavigate } from "react-router-dom";
+import { isLogin, toggleLoginStatus,setCust} from "../api/islogin";
+import logo from "F:/Practical/snappy/src/Products-Images/logo.png";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import OtpInput from "react-otp-input";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
 
 function Login() {
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [otpDigits, setOtpDigits] = useState(["", "", "", ""]);
+  const navigate = useNavigate();
   const [showOtpForm, setShowOtpForm] = useState(false);
+  const [showmobilenumber, setmobilenumber] = useState(true);
+  const [phone, setphone] = useState();
+  const [name, setName] = useState();
+  const [pincode, setPincode] = useState();
+  const [city, setCity] = useState("");
+  const [isuserverified, setVerification] = useState(false);
+  const [alertText, setalertText] = useState("");
+const [custId,setCustId] = useState("");
 
-  const handleGenerateOTP = (e) => {
+  let debounceTimer;
+  // OTP Part Start
+  const [otp, setOtp] = useState("");
+  useEffect(() => {
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "userid" && value) {
+        toggleLoginStatus();
+        return navigate("/");
+      }
+    }
+  }, []);
+
+  const handleGenerateOTP = async (e) => {
     e.preventDefault();
-    // logic to generate OTP
-    
-    setShowOtpForm(true);
+
+    try {
+      fetch("http://192.168.1.34:3939/sendOtp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ MobileNumber: "+" + phone }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Handle the response data here
+          console.log(data.verficationStatus);
+          if (data.verficationStatus) {
+            handleVerifyOTP();
+          } else {
+            setalertText("OTP has Not Sent !");
+            showAlert(false);
+          }
+        })
+        .catch((error) => {
+          // Handle errors
+          console.error("Error fetching data:", error);
+        });
+
+      setmobilenumber(false);
+      setShowOtpForm(true);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const showmobilenumberform = (e) => {
+    e.preventDefault();
+    setShowOtpForm(false);
+    setmobilenumber(true);
   };
 
+  // handling OTP submit form
   const handleVerifyOTP = (e) => {
     e.preventDefault();
-    const otp = otpDigits.join(""); 
-    //logic to verify the OTP 
-    
-    console.log("OTP verified successfully:", otp);
+
+    try {
+      fetch("http://192.168.1.34:3939/verifyOTP", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ InputOTP:otp }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Handle the response data here
+          console.log(data.verficationStatus);
+          if (data.verficationStatus) {
+            setCust(data.user);
+            if (data.alreadyCust && data.custId) {
+              setCustId(data.custId);
+              setCookie("userid", data.custId, 7);
+              return navigate("/");
+            } else {
+              setVerification(true);
+              setShowOtpForm(false);
+              setalertText("OTP Verified Successfull !");
+              showAlert(true);
+            }
+          } else {
+            setalertText("OTP is Not Valid !");
+            showAlert(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
-  const handleOtpChange = (index, value) => {
-    const newOtpDigits = [...otpDigits];
-    newOtpDigits[index] = value;
-    setOtpDigits(newOtpDigits);
+  // Searching City by their Pincode API Call
+  const searchCity = async (value) => {
+    try {
+      const response = await fetch(
+        `https://api.postalpincode.in/pincode/${value}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const cityFromResponse = data[0]?.PostOffice?.[0]?.District;
+      const Status = data[0]?.Status;
+      if (Status === "Success") {
+        setCity(cityFromResponse || "City not found");
+      } else {
+        setCity("");
+      }
+    } catch (error) {
+      console.error("Error fetching city data:", error);
+    }
   };
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setPincode(value);
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      searchCity(value);
+    }, 500); // Adjust the debounce time (milliseconds) as needed
+  };
+
+  // Register the User with its name and address
+  const gotohomepage = (e) => {
+    e.preventDefault();
+    const address = `${city}, ${pincode}`;
+    try {
+      fetch("http://192.168.1.34:3939/register/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          custName: name,
+          custAddress: address,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          // Handle the response data here
+          console.log(data.verficationStatus);
+          if (data.verficationStatus && data.custId) {
+            setCust(data.cust);
+            const userId = data.custId;
+            setCookie("userid", userId, 7);
+            setVerification(true);
+            setShowOtpForm(false);
+            setalertText("Registration Successfull!");
+            showAlert(true);
+            toggleLoginStatus();
+            navigate("/");
+          } else {
+            console.log("194.Login.js ",data);
+            setalertText("Error in login !");
+            showAlert(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/";
+  }
+
+  function showAlert(isPositive) {
+    var alertBox = document.getElementById("customAlert");
+    if (isPositive) {
+      alertBox.classList.toggle("show"); // Add the 'show' class
+    }
+    alertBox.style.display = "block";
+    setTimeout(function () {
+      alertBox.style.display = "none";
+    }, 2000);
+  }
+
+  function closeAlert() {
+    var alertBox = document.getElementById("customAlert");
+    alertBox.classList.toggle("show"); // Remove the 'show' class
+    alertBox.style.display = "none";
+  }
+
+  if (isLogin) {
+    return navigate("/");
+  }
 
   return (
     <div className="login-container">
-      {!showOtpForm ? (
+      <div id="customAlert" class="alert">
+        <span class="closebtn" onClick={closeAlert}>
+          &times;
+        </span>
+        <strong>{alertText}</strong>
+      </div>
+      {showmobilenumber && (
         <form className="login-form" onSubmit={handleGenerateOTP}>
-          <div className="tital">
-            <div class="Snappy">Snappy</div>
-            <div class="subtital">A Complete Grocery Store</div>
+          <div className="logo">
+            <img src={logo} alt="Logo Can't Loaded" />
           </div>
-          <div class="log">Login/Sing up</div>
-          <div className="mobile-number-container">
-            <div className="country-code-select">
-              <select class="select"
-                value={selectedCountry}
-                onChange={(e) => setSelectedCountry(e.target.value)}
-              >
-                <option value="">Select Country</option>
-                <option value="us">+1 (USA)</option>
-                <option value="uk">United Kingdom</option>
-                <option value="in">+91(IND)</option>
-                {/*more options*/}
-              </select>
-            </div>
-            <div className="mobile-number-input">
-              <label htmlFor="mobileNumber">Mobile Number:</label>
-              <input
-              type="text"
-              placeholder="Enter Your Mobile number"
-              id="mobileNumber"
-              value={mobileNumber} 
-              onChange={(e) => {
-    
-               const input = e.target.value.replace(/\D/g, '');
-    
-              const limitedInput = input.slice(0, 10);
-    
-    setMobileNumber(limitedInput);
-  }}
-  pattern="[0-9]{10}" 
-/>
-            </div>
+          <div className="tag">
+            <h2 className="tag-h2">Login / SignUp</h2>
           </div>
-          <button type="submit">Generate OTP</button>
-        </form>
-      ) : (
-        <form className="login-form" onSubmit={handleVerifyOTP}>
-          <div className="tital">
-            <div class="Snappy">Snappy</div>
-            <div class="subtital">A Complete Grocery Store</div>
-          </div>
-          <div class="subtital-2">OTP Verification</div>
-          <div className="otp-input">
-          <label htmlFor="otp">OTP</label>
-          <div className="otp-input">
-            {otpDigits.map((digit, index) => (
-              <input
-                id="opt"
-                key={index}
-                type="text"
-                maxLength="1"
-                value={digit}
-                onChange={(e) => handleOtpChange(index, e.target.value)}
+          <div className="inputfields">
+            <h2 className="mobiletext">Mobile number</h2>
+            <div className="mobileinput">
+              <PhoneInput
+                containerClass="custom-phone-input"
+                country={"in"}
+                value={phone}
+                placeholder="Enter Your Mobile Number"
+                onChange={(phone) => setphone(phone)}
               />
-            ))}
             </div>
           </div>
-          <button type="submit">Verify OTP</button>
-          <div class="resend">Resend OTP</div>
+          <div className="submitbutton">
+            <button type="submit" className="submit">
+              Generate OTP
+            </button>
+          </div>
+        </form>
+      )}
+      {showOtpForm && (
+        <form className="login-form" onSubmit={handleVerifyOTP}>
+          <div className="logo1">
+            <button className="backbutton" onClick={showmobilenumberform}>
+              <ArrowLeftIcon />
+            </button>
+            <img src={logo} alt="Logo Can't Loaded" className="logoimage" />
+          </div>
+          <div className="tag">
+            <h2 className="tag-h2">OTP Verification</h2>
+          </div>
+          <div className="inputfields">
+            <h2 className="mobiletext">OTP</h2>
+            <div className="otpinput">
+              <OtpInput
+                value={otp}
+                onChange={setOtp}
+                numInputs={4}
+                renderInput={(props, index) => (
+                  <input
+                    {...props}
+                    className="otp-input"
+                    style={{ height: "50px", width: "50px" }}
+                    key={index}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="submitbutton">
+            <button type="submit" className="submit">
+              Verify OTP
+            </button>
+          </div>
+        </form>
+      )}
+
+      {isuserverified && (
+        <form className="login-form" onSubmit={gotohomepage}>
+          <div className="logo">
+            <img src={logo} alt="Logo Can't Loaded" />
+          </div>
+          <div className="inputfields" id="inputid">
+            <h2 className="mobiletext">Name</h2>
+            <input
+              value={name}
+              type="text"
+              className="name-address"
+              placeholder="Enter Your Name"
+              onChange={(event) => setName(event.target.value)}
+            />
+          </div>
+          <div className="inputfields" id="inputid">
+            <h2 className="mobiletext">Address</h2>
+            <input
+              value={pincode}
+              type="text"
+              className="name-address"
+              placeholder={"Enter Your Address (In Pincode)"}
+              onChange={handleInputChange}
+            />
+            <h3 className="address">
+              {pincode ? city : null} {city ? pincode : null}
+            </h3>
+          </div>
+          <div className="submitbutton" id="submitbutton">
+            <button type="submit" className="submit">
+              Continue
+            </button>
+          </div>
         </form>
       )}
     </div>

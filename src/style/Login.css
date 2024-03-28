@@ -1,169 +1,224 @@
 /* Login.css */
 
-body {
-    margin: 0;
-    padding: 0;
-    background-image: url('/public/Trial-Login.png');
-    background-size: auto; 
-    background-position: center;
-    background-attachment: fixed;
-    height: 100vh;
-  }
-  
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; 
-  }
-  .tital {
-    text-align: center; 
-    margin-top: 0px; 
-  }
-  
-  .Snappy {
-    font-size: 40px; 
-    font-family: 'Racing Sans One', sans-serif; 
-    background: linear-gradient(90deg, #254AA9 50%, #1F8F16 50%); 
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent; 
-    letter-spacing: 5%; 
-  }
-  
-  .subtital {
-    font-size: 14px; 
-    font-family: 'Racing Sans One', sans-serif;  
-    color: #254AA9; 
+.alert {
+  padding: 20px;
+  background-color: #bf1e1e;
+  color: rgb(245, 245, 245);
+  border-radius: 10px;
+  position: fixed;
+  top: -100px; /* Initially hidden above the viewport */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: none;
+  transition: top 0.5s ease-in-out; /* Smooth transition for the top property */
+}
+
+.alert.show {
+  background-color: #0d8311;
+  top: 20px; /* Adjusted top position when showing the alert */
 }
 
 
-.log{
-    margin-top: 18%;
-    font-family: 'Algreya Sans', sans-serif; 
-    font-size: 20px; 
-    text-align: center; 
-    background: linear-gradient(90deg, #254AA9 50%, #1F8F16 50%); 
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent; 
-    text-decoration: underline;
-  
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.login-container {
+  background-image: url("/public/Trial-Login.png");
+  background-size: cover;
+  background-position: center; /* Center the background image */
+  width: 100vw; /* Make the container full width of the viewport */
+  height: 100vh; /* Make the container full height of the viewport */
+  display: flex; /* Optional: Center content vertically and horizontally */
+  justify-content: center; /* Optional: Center content horizontally */
+  align-items: center; /* Optional: Center content vertically */
 }
 .login-form {
-    width: 487px;
-    height: 475px;
-    padding: 20px; 
-    background-color: rgba(249, 249, 249, 0.8);
-    border-radius: 8px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  
-  .mobile-number-container {
-    display: flex;
-    margin-top: 50px;
-   
-  }
-  
-  .country-code-select {
-    width: 15%;
-    margin-right: 18px;
-    font-size: 13px;
-  }
-  
-  .select {
-    width: 81px;
-    height: 25px;
-    margin-top: 49%;
-    font-size: 13px;
-    margin-left: 36%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  height: 70vh;
+  /*border: 1px black solid;*/
+  background-color: rgba(243, 243, 243, 0.6);
+  border-radius: 12px;
+  box-shadow: 0px 5px 10px rgba(0, 10, 10, 0.3);
 }
-  
-  .mobile-number-input {
-    width: 70%;
-    
-  }
-  
-  .mobile-number-input label {
-    display: block;
-    margin-bottom: 5px;
-    margin-left: -18%;
-    color: #6785D1;
-    font-size: 14px;
-  }
-  
-  .mobile-number-input input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    margin-left: 7%;
-  }
-  
- 
-  .subtital-2{
-    font-weight: bold;
-    margin-top: 18%;
-    font-family: 'Algreya Sans', sans-serif; 
-    font-size: 20px; 
-    text-align: center; 
-    background: linear-gradient(60deg, #254AA9 50%, #1F8F16 50%); 
-    -webkit-background-clip: text; 
-    -webkit-text-fill-color: transparent; 
-    text-decoration: underline;
-  
+.logo {
+  margin-left: 5%;
 }
-.otp-input label {
-    margin-top: 10%;
-    display: block;
-    margin-bottom: 5px;
-    margin-left: 15%;
-    color: #1F8F16;
-    font-size: 14px;
+
+.logo1{
+  width: 80%;
+  display: flex;
+  align-items: center;
+}
+
+.backbutton{
+  color: white;
+  background-color: #6785d1;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.5s, color 0.5s,border 0.5s;
+  &:hover{
+    color: black;
+    border: 1px black solid;
+  background-color: rgb(231, 231, 231);
   }
-  
-  .otp-input {
-    margin-top: 10px;
-    margin-left: 15%;
+}
+
+.logoimage{
+  margin: 0 auto;
+}
+.tag {
+  padding: 10px;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, #6785d1, #1f8f16) 1;
+}
+.tag-h2 {
+  background: #254aa9;
+  background: linear-gradient(to right, #254aa9 0%, #1f8f16 100%);
+  -webkit-background-clip: text;
+  font-family: "Alegreya Sans", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  -webkit-text-fill-color: transparent;
+}
+
+
+.mobiletext {
+  font-size: 18px;
+  color: #6785d1;
+}
+
+.inputfields{
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+  border-radius: 5px;
+}
+.mobileinput{
+  border: 1px solid #6785d1;
+  border-radius: 5px;
+}
+
+/* Custom styles for the phone input field */
+.custom-phone-input input[type="tel"] {
+  width: 330px;
+  height: 50px;
+  font-size: 18px;
+  color: #1F8F16;
+}
+
+.submitbutton{
+  width: 220px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6785d1;
+  border-radius: 6px;
+  margin-top: 30px;
+  color: white;
+  transition: background-color 0.5s, color 0.5s,border 0.5s;
+
+  &:hover{
+    border: 1px black solid;
+    background-color: white;
+  color: #333;
   }
-  
- 
-  .otp-input input[type="text"] {
-    width: 50px; 
-    padding: 10px; 
-    margin-right: 5px; 
-    font-size: 16px; 
-    text-align: center; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
+}
+.submit{
+  width: 220px;
+  height: 45px;
+   font-family: "Roboto";
+   font-size: 16px;
+}
+.otp-input{
+  margin-right: 10px;
+  border: 1px #6785d1 solid;
+  border-radius: 6px;
+  height: 50px;
+  width: 50px;
+  color: #1F8F16;
+  text-align: center;
+  outline-color: #254aa9;
+  outline-width: 2px;
+}
+
+.name-address{
+  width: 300px;
+  height: 30px;
+  outline-color: #254aa9;
+  outline-width: 2px;
+  padding: 20px;
+  border: 1px #6785d1 solid;
+  border-radius: 6px;
+}
+.address{
+  color: #1F8F16;
+  font-family: "ROBOTO";
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .login-container{
+    height: 100vh;
+    position: fixed;
   }
-  
-  
-  .otp-input input[type="text"]:focus {
-    outline: none; 
-    border-color: #007bff; 
+  .login-form{
+    width: 300px;
+    height: 55vh;
   }
-  
-  .resend {
-    text-align: center; 
-    margin-top: 7%; 
-    font-size: 14px; 
-    color: #6785D1; 
-    
-    cursor: pointer; 
+  .logo , .logoimage{
+    width: 150px;
+    height: 80px;
+  }
+  .tag-h2,.mobiletext{
+    font-size: 16px;
+  }
+  .inputfields{
+    width: 250px;
+
   }
 
-button {
-    margin-top: 8% !important;
-    width: 55%;
-    padding: 10px;
-    background-color: #6785D1 !important;
-    color: #ffffff;
-    
-    cursor: pointer;
-    border-radius: 6px;
-    display: block; 
-    margin: 0 auto; 
+  .submit{
+    width: 100px;
+    height: 45px;
+     font-family: "Roboto";
+     font-size: 14px;
   }
-  
-  
- 
-  
+  .custom-phone-input input[type="tel"],.name-address{
+    width: 100%;
+    height: 50px;
+    font-size: 14px;
+    color: #1F8F16;
+  }
+  #inputid{
+    margin: 10px;
+  }
+  #submitbutton{
+    margin: 5px;
+  }
+  .backbutton{
+    color: rgb(0, 0, 0);
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px black solid;
+  }
+}
