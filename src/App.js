@@ -9,7 +9,7 @@ function App() {
   const [name, setName] = useState("");
   const [custName,setcustName] = useState("");
   const [custAddress,setcustAddress] = useState("");
-  useEffect(() => {
+ /* useEffect(() => {
     const cookies = document.cookie.split(";");
     let userIdCookieValue = null;
     for (let cookie of cookies) {
@@ -51,9 +51,15 @@ function App() {
       })
       .then((data) => {
         if (data.verficationStatus) {
-          setCust(data.cust[0]);
-          setcustName(data.cust[0].custName);
-          setcustAddress(data.cust[0].custAddress);
+    const extractedData = data.cust.map(({ custId, custName, custAddress, custPhoneNumber }) => ({
+        custId,
+        custName,
+        custAddress,
+        custPhoneNumber
+      }));
+         setCust(extractedData[0]);
+          setcustName(extractedData[0].custName);
+          setcustAddress(extractedData[0].custAddress);
         }
       })
       .catch((error) => {
@@ -63,7 +69,7 @@ function App() {
       console.log(error.message);
     }
   };
-  
+  */
   return (
     <BrowserRouter>
       <Routes>
