@@ -20,7 +20,7 @@ export default function Footer() {
     </div>
 <div className="line"></div>
     <div className="copyright">
-      <h2>This project is created by Team Snappy. Copyright <Copyright size={20} style={{ margin: '0px 5px 0px 5px' }}/> 2024 Snappy Contributors. All rights reserved  2024 Snappy Contributers</h2>
+      <h2>This project is created by Team Snappy. Copyright <Copyright size={20} style={{ margin: '0px 5px 0px 5px' }}/> 2024 Snappy Contributors. All rights reserved  2024 Snappy Contributers.</h2>
       </div>
     </>
   )
