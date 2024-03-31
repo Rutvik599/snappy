@@ -10,13 +10,11 @@ import {
 } from "lucide-react";
 import getCustomerDetail from "F:/Practical/snappy/src/api/getcustomer.js";
 import logo from "../Products-Images/snappy.png";
-import { getValue } from "../api/islogin";
 import { toggleLoginStatus } from "../api/islogin";
 import { useNavigate } from "react-router-dom";
 import AlertBox from "./Alertbox";
 export default function Header() {
   const navigate = useNavigate();
-  const value = getValue();
   const [name, setName] = useState("");
   const [address, setaddress] = useState("");
   const [searchText, setSearchText] = useState("Search 'Rice'");
@@ -49,6 +47,20 @@ export default function Header() {
       console.log(address);
     }
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+        setIsSearchBarActive(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchBarRef]);
+
 
   useEffect(() => {
     const cookies = document.cookie.split(";");
