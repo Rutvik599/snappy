@@ -5,7 +5,7 @@ import { ArrowDownLeft, Bird, CircleHelp, Copyright, Github, Headset, Mail, User
 export default function Footer() {
   return (
     <>
-    <div className="line"><div></div></div>
+    <div className="line"></div>
     <div className='mainfooter'>
       <img src={logo} alt="" className="headerlogo" onClick={()=>window.location.reload()}/>
       <div className="links">
@@ -16,9 +16,9 @@ export default function Footer() {
 <button><Github size={20}/><span className="text">Sourcode</span></button>
 <button><Mail size={20}/><span className="text">Gmail</span></button>
 <button><Bird size={20}/><span className="text">Team Snappy</span></button>
-
       </div>
     </div>
+<div className="line"></div>
     <div className="copyright">
       <h2>This project is created by Team Snappy. Copyright <Copyright size={20} style={{ margin: '0px 5px 0px 5px' }}/> 2024 Snappy Contributors. All rights reserved  2024 Snappy Contributers</h2>
       </div>
