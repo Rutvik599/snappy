@@ -18,8 +18,14 @@ const connection = mysql.createConnection({
   database: "snappy",
 });
 
+/*
+TWILIO_AUTH_TOKEN = "2ab1c2cef068f3e812de4e2e37168db5"
+TWILLIO_NUMBER = "+19412567246"
+process.env.TWILIO_AUTH_TOKEN ;
+*/
+
 const accountSid = "ACca10709697dea185fa57ec0b59c2e148";
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+const authToken = "2ab1c2cef068f3e812de4e2e37168db5";
 const verifySid = "VAeba667e53bade27834e8976099bba92b";
 const client = require("twilio")(accountSid, authToken);
 var OTP = "";

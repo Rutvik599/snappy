@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../style/Login.css"; // Import CSS file with corrected path
 import { useNavigate } from "react-router-dom";
 import { isLogin, toggleLoginStatus,setCust} from "../api/islogin";
-import logo from "F:/Practical/snappy/src/Products-Images/logo.png";
+import logo from "F:/Practical/snappy/src/Products-Images/logo.png"
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import OtpInput from "react-otp-input";
@@ -38,7 +38,7 @@ const [custId,setCustId] = useState("");
     e.preventDefault();
 
     try {
-      fetch("http://192.168.1.34:3939/sendOtp", {
+      fetch("http://localhost:3939/sendOtp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const [custId,setCustId] = useState("");
     e.preventDefault();
 
     try {
-      fetch("http://192.168.1.34:3939/verifyOTP", {
+      fetch("http://localhost:3939/verifyOTP", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,8 +100,9 @@ const [custId,setCustId] = useState("");
           // Handle the response data here
           console.log(data.verficationStatus);
           if (data.verficationStatus) {
+            console.log(data);
             setCust(data.user);
-            if (data.alreadyCust && data.custId) {
+            if (data.alreadyCust) {
               setCustId(data.custId);
               setCookie("userid", data.custId, 7);
               return navigate("/");
@@ -152,15 +153,18 @@ const [custId,setCustId] = useState("");
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
       searchCity(value);
-    }, 500); // Adjust the debounce time (milliseconds) as needed
+    }, 100); // Adjust the debounce time (milliseconds) as needed
   };
 
   // Register the User with its name and address
   const gotohomepage = (e) => {
     e.preventDefault();
     const address = `${city}, ${pincode}`;
+    if (city && pincode) {
+      
+    
     try {
-      fetch("http://192.168.1.34:3939/register/user", {
+      fetch("http://localhost:3939/register/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -201,6 +205,7 @@ const [custId,setCustId] = useState("");
     } catch (error) {
       console.log(error.message);
     }
+  }
   };
 
   function setCookie(name, value, days) {

@@ -1,22 +1,42 @@
-import { Navigate, useNavigate } from "react-router-dom";
-import { isLogin, toggleLoginStatus,getValue,setCust} from "../api/islogin";
+import { useNavigate, Outlet } from "react-router-dom";
+import { getValue } from "../api/islogin";
 import "../style/Homepage.css";
-import { useEffect, useState } from "react";
-import { validate } from "uuid";
+import { useEffect} from "react";
 import Header from "../Component/Header";
+import Headerbottom from "../Component/Headerbottom";
+import Slider from "../Component/Slider";
+import Footer from "../Component/Footer";
 
-function Homepage(props) {
-  let isLoggedin = isLogin;
+
+function Homepage() {
   const navigate = useNavigate();
-  const [name,setname] = useState("");
   const value = getValue();
- 
-  if(!value){
-    return navigate("/login");
-  }
 
+  
+  useEffect(() => {
+    if (!value) {
+      navigate("/login");
+    }
+  }, [navigate, value]);
+
+  useEffect(() => {
+    // Redirect to '/category/allcategories' if the current URL is '/'
+    if (window.location.pathname === '/') {
+      navigate('/category/allcategories');
+    }
+  }, [navigate]);
+
+  if(!<Outlet/>){
+    return navigate("/category/allcategories");
+  }
   return (
-    <Header name={props.name} address={props.address}/>
+    <>
+      <Header  />
+      <Headerbottom class="All Categories" />
+      <Slider/>
+      <Outlet/>
+      <Footer/>
+    </>
   );
 }
 export default Homepage;

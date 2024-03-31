@@ -1,0 +1,19 @@
+.slider-container {
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .slider-image {
+    width: 40%; 
+    margin: 10px;
+    border-radius: 5px;
+    object-fit: contain;
+    height: auto;
+    cursor: pointer;
+  }
+  
+  

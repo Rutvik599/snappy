@@ -1,0 +1,107 @@
+.maincard{
+    width: 300px;
+    height: 400px;
+    border: 1px rgb(115, 115, 115) solid;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    transition: all 0.5s ease;
+    &:hover{
+        box-shadow: 0px 0px 5px rgba(112, 156, 245, 0.622), 0 1px 3px rgba(0, 0, 0, 0.08);
+        border: 1px  rgb(20, 63, 150) solid;
+}
+}
+
+.productimage{
+    border-bottom: 1px rgba(192, 192, 192, 0.7) solid;
+    padding: 5px;
+    margin: 5px;
+    width: 250px; /* Set the width of the image */
+    aspect-ratio: 3/2;
+  object-fit: contain;
+  mix-blend-mode: color-burn;
+}
+.headerdetails,.itemsavaiable{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px;
+}
+.details{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.headerdetails{
+    display: flex;
+    align-items: center;
+    width: 250px;
+    font-weight: 600;
+}
+
+.dropdown,.dropdown1,.addtocart{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 250px;
+    outline: none;
+    border: 1px rgba(192, 192, 192, 0.7) solid;
+    border-radius: 5px;
+    padding: 3px;
+    color: rgb(3, 92, 3);
+}
+
+.dropdown1{
+    border: none;
+}
+
+.rating{
+    margin-right: 5px;
+}
+
+li{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.5 ease-in-out;
+    margin: 0px 10px 1px 10px;
+    color: #5977C3;
+    z-index: 999;
+    &:hover{
+        color: rgb(3, 92, 3);
+    }
+}
+.dropdown-menu{
+    width: 250px;
+    border: 1px #5977C3 solid;
+    margin: 5px;
+    border-radius: 5px; /* Adjust the shadow color and opacity */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.addtocart{
+    padding: 10px;
+    justify-content: space-around;
+    width: 250px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  margin-top: 30px;
+  transition: background-color 0.5s, color 0.5s,border 0.5s;
+
+  &:hover{
+    border: 1px #6785d1 solid;
+    background-color: #6785d1;
+  color: #ffffff;
+  }
+}
+
+

@@ -1,0 +1,25 @@
+.menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+}
+.mainmenu{
+    width: 60%;
+    height: 60px;
+    border: 1px #969696 solid;
+    border-radius: 15px;
+    background-color: rgba(243, 243, 243, 0.7);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+button{
+    margin: 10px;
+    color: #808080;
+    transition: border-bottom 1s ease;
+}
+.active{
+    color: #5977C3;
+    border-bottom: 1px #5977C3 solid;
+}
