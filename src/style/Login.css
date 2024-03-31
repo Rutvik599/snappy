@@ -128,10 +128,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: white;
   background-color: #6785d1;
   border-radius: 6px;
   margin-top: 30px;
-  color: white;
   transition: background-color 0.5s, color 0.5s,border 0.5s;
 
   &:hover{
