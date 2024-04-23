@@ -141,10 +141,15 @@
   }
 }
 .submit{
+  color: white;
   width: 220px;
   height: 45px;
    font-family: "Roboto";
    font-size: 16px;
+   transition: color 0.5s;
+   &:hover{
+    color: #333;
+   }
 }
 .otp-input{
   margin-right: 10px;

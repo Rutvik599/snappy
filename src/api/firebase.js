@@ -11,14 +11,5 @@ const firebaseConfig = {
     measurementId: "G-GQLJSHTNRC"
   };
 
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+firebase.initializeApp(firebaseConfig);
 
-// Prepare the data
-const userData = {
-  name: "Rutvik PAtel",
-  age: 21
-};
-
-// Insert data into the database
-database.ref('users').push(userData);

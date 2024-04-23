@@ -4,6 +4,7 @@ import Homepage from "./Pages/Homepage";
 import Login from "./Pages/Login";
 import Product from "F:/Practical/snappy/src/Component/Product.jsx";
 import '@radix-ui/themes/styles.css';
+import Searchcard from "./Component/Searchcard";
 
 function App() {
   
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Homepage/>}>
         <Route path="/category/:categoryname" element={<Product />} />
+        <Route path="searchResult/:searchParam" element={<Searchcard />} />
         </Route>
         <Route path="/login" element={<Login />} />
        <Route path="*" element={<Navigate to="/" />} />

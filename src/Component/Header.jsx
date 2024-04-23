@@ -13,6 +13,7 @@ import logo from "../Products-Images/snappy.png";
 import { toggleLoginStatus } from "../api/islogin";
 import { useNavigate } from "react-router-dom";
 import AlertBox from "./Alertbox";
+
 export default function Header() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -20,15 +21,10 @@ export default function Header() {
   const [searchText, setSearchText] = useState("Search 'Rice'");
   const wordsArray = ["Bread", "Vegetables", "Fruits", "Spices", "Rice"];
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [searched, setsearched] = useState();
-  const [isSearchBarActive, setIsSearchBarActive] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const searchBarRef = useRef(null);
-  const handleSearchButtonClick = () => {
-    setIsSearchBarActive(true);
-  };
+  const [searchitem, setSearchitem] = useState("");
   const fetchCustomerData = async (custId) => {
-    const data = await getCustomerDetail(custId); // Replace "123" with the actual custId
+    const data = await getCustomerDetail(custId);
     const extractedData = data.cust.map(
       ({ custId, custName, custAddress, custPhoneNumber }) => ({
         custId,
@@ -37,7 +33,6 @@ export default function Header() {
         custPhoneNumber,
       })
     );
-    console.log(extractedData[0]?.custAddress);
     setName(extractedData[0]?.custName);
     setaddress(extractedData[0]?.custAddress);
     if (data && data.verificationStatus) {
@@ -49,26 +44,13 @@ export default function Header() {
   };
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
-        setIsSearchBarActive(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [searchBarRef]);
-
-
-  useEffect(() => {
     const cookies = document.cookie.split(";");
     let userIdCookieValue = null;
     for (let cookie of cookies) {
       const [cookieName, cookieValue] = cookie.trim().split("=");
       if (cookieName === "userid") {
         userIdCookieValue = cookieValue;
+        fetchCustomerData(cookieValue);
         break;
       }
     }
@@ -76,7 +58,6 @@ export default function Header() {
       toggleLoginStatus();
       return navigate("/login");
     } else {
-      console.log(userIdCookieValue);
       fetchCustomerData(userIdCookieValue);
     }
   }, []);
@@ -95,33 +76,14 @@ export default function Header() {
 
   const searchcategory = () => {
     // Convert input to lowercase
-    const lowercaseInput = searched.toLowerCase();
-
+    const lowercaseInput = searchitem.toLowerCase();
+    setSearchitem("");
     // Define regular expressions for different categories
-    const fruitRegex =
-      /\b(fruit|fruits|apple|banana|grapes|orange|apples|bananas|oranges)\b/;
-    const vegetableRegex =
-      /\b(vegetable|vegetables|tomatos|tomatoes|tomato|carrot|carrots|carrat|spinach|spinachs|palak|broccoli|tamatar|gajar)\b/;
-    const dairyRegex =
-      /\b(dairy|milk|cheese|yogurt|curd|butter|dudh|dahi|ghee|makhhan)\b/;
-    const groceryRegex = /\b(grocery|groc)\b/;
-    const nuts =
-      /\b(nuts|nut|almonds|almond|badam|cashew|kaju|hazelnuts|hazelnut|makhana|pecan|peacans)\b/;
+    const combinedRegex =
+      /\b(fruit|fruits|apple|banana|grapes|orange|apples|bananas|oranges|vegetable|vegetables|tomatos|tomatoes|tomato|carrot|carrots|carrat|spinach|spinachs|palak|broccoli|tamatar|gajar|dairy|milk|cheese|yogurt|curd|butter|dudh|dahi|ghee|makhhan|grocery|groc|nuts|nut|almonds|almond|badam|cashew|kaju|hazelnuts|hazelnut|makhana|pecan|peacans)\b/i;
 
-    // Match lowercase input with category regex and set the search parameter
-    setIsSearchBarActive(false);
-    setsearched("");
-    if (fruitRegex.test(lowercaseInput)) {
-      //setSearch("fruits");
-      return navigate("category/fruits");
-    } else if (vegetableRegex.test(lowercaseInput)) {
-      return navigate("category/vegetables");
-    } else if (dairyRegex.test(lowercaseInput)) {
-      return navigate("category/dairyproducts");
-    } else if (groceryRegex.test(lowercaseInput)) {
-      return navigate("category/grocery");
-    } else if (nuts.test(lowercaseInput)) {
-      return navigate("category/nuts");
+    if (combinedRegex.test(lowercaseInput)) {
+      return navigate(`searchResult/${lowercaseInput}`);
     } else {
       return navigate("category/allcategories"); // No category matched
     }
@@ -146,42 +108,31 @@ export default function Header() {
           warning={true}
         />
       )}
-      <div
-        className={`searchbar ${isSearchBarActive ? "activesearch" : ""}`}
-        ref={searchBarRef}
-      >
-        <button className="close" onClick={() => setIsSearchBarActive(false)}>
-          <X />
-        </button>
-        <h1 className="searchtext1">Search for Products</h1>
-        <div className="ogsearch">
-          <input
-            value={searched}
-            onChange={(e) => setsearched(e.target.value)}
-            className="searchinput"
-            placeholder="Search 'Rice'"
-          />
-          <button className="ogsearchbtn" onClick={searchcategory}>
-            <Search size={20} style={{ marginRight: "5px" }} />
-            Search
-          </button>
-        </div>
-      </div>
       <div className="mainheader">
         <div className="fontpart">
           <img
             src={logo}
             alt=""
             className="headerlogo"
-            onClick={() => window.location.reload()}
+            onClick={() => navigate('/')}
           />
           <div className="location">
             <MapPin size={15} /> <span className="locationtext">{address}</span>
             <ChevronDown size={15} />
           </div>
-          <button className="searchbutton" onClick={handleSearchButtonClick}>
-            <Search size={20} />{" "}
-            <span className="searchtext"> {searchText}</span>
+          <button className="searchbutton">
+            <Search size={20} />
+            <span className="searchtext">
+              <input
+                type="text"
+                placeholder={searchText}
+                value={searchitem}
+                onChange={(e) => setSearchitem(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") searchcategory();
+                }}
+              />
+            </span>
           </button>
         </div>
         <div className="sidebar">

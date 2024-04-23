@@ -2,7 +2,7 @@
 
 async function getCustomerDetail(custId) {
     try {
-      const response = await fetch("http://192.168.1.34:3939/getuserdetail", {
+      const response = await fetch("http://localhost:3939/getuserdetail", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

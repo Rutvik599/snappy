@@ -101,7 +101,7 @@ const [custId,setCustId] = useState("");
           console.log(data.verficationStatus);
           if (data.verficationStatus) {
             console.log(data);
-            setCust(data.user);
+            setCust(data.custId);
             if (data.alreadyCust) {
               setCustId(data.custId);
               setCookie("userid", data.custId, 7);
@@ -157,7 +157,7 @@ const [custId,setCustId] = useState("");
   };
 
   // Register the User with its name and address
-  const gotohomepage = (e) => {
+  const gotohomepage = async (e) => {
     e.preventDefault();
     const address = `${city}, ${pincode}`;
     if (city && pincode) {
@@ -194,7 +194,7 @@ const [custId,setCustId] = useState("");
             toggleLoginStatus();
             navigate("/");
           } else {
-            console.log("194.Login.js ",data);
+            console.log("194.Login.js ",data.verficationStatus);
             setalertText("Error in login !");
             showAlert(false);
           }

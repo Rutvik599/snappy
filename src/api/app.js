@@ -1,39 +1,58 @@
-require("dotenv").config();
-// API for pincode https://api.postalpincode.in/pincode/384002
-// Source http://www.postalpincode.in/Api-Details
-var express = require("express");
-const mysql = require("mysql");
+const express = require("express");
+const { initializeApp } = require("firebase/app");
+const { getFirestore, collection, getDocs, setDoc, doc, query, where } = require("firebase/firestore/lite");
 const cors = require("cors");
+const bodyparser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
-var app = express();
-var bodyparser = require("body-parser");
+const app = express();
+const port = 3939;
 app.use(cors());
 app.use(bodyparser.json());
-
-// MySQL connection configuration
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "snappy",
-});
-
-/*
-TWILIO_AUTH_TOKEN = "2ab1c2cef068f3e812de4e2e37168db5"
-TWILLIO_NUMBER = "+19412567246"
-process.env.TWILIO_AUTH_TOKEN ;
-*/
-
-const accountSid = "ACca10709697dea185fa57ec0b59c2e148";
-const authToken = "2ab1c2cef068f3e812de4e2e37168db5";
-const verifySid = "VAeba667e53bade27834e8976099bba92b";
-const client = require("twilio")(accountSid, authToken);
 var OTP = "";
 var mobileNumber = "";
-var userOTP = "";
-var userResult = "";
+var userOTP;
+var userResult;
 var alreadycustomer = false;
 var uuid = "";
+const accountSid = "ACca10709697dea185fa57ec0b59c2e148";
+const authToken = "2ab1c2cef068f3e812de4e2e37168db5";
+const client = require("twilio")(accountSid, authToken);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDDkePY0ED_CE-icYTI4Sz_i9s1CRbkDWA",
+  authDomain: "snappy-website-1f783.firebaseapp.com",
+  projectId: "snappy-website-1f783",
+  storageBucket: "snappy-website-1f783.appspot.com",
+  messagingSenderId: "5961176894",
+  appId: "1:5961176894:web:808639bc287cf2e34dfe6f",
+  measurementId: "G-GQLJSHTNRC"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp);
+
+// Define finduser function
+const finduser = (mobileNumber, callback) => {
+  const usersRef = collection(db, "customer_profiles");
+  const queryRef = query(usersRef, where("custPhoneNumber", "==", mobileNumber));
+
+  getDocs(queryRef)
+    .then((querySnapshot) => {
+      const results = [];
+      querySnapshot.forEach((doc) => {
+        results.push(doc.data());
+      });
+      userResult = results.length > 0 ? results[0] : null;
+      callback(null, results);
+    })
+    .catch((err) => {
+      console.error("Error retrieving data: ", err);
+      callback(err, null);
+    });
+};
+
+// Define Express routes
+app.use(express.json());
 const generate_otp = () => {
   let temp = "";
   for (let index = 0; index < 4; index++) {
@@ -41,10 +60,46 @@ const generate_otp = () => {
   }
   return temp;
 };
+app.post("/sendOtp", (req, res) => {
+   mobileNumber = req.body.MobileNumber;
+   OTP = generate_otp(); // Define generate_otp function
+
+  try {
+    console.log(
+      `/sendOTP api and The OTP has been sent is ${OTP} on ${mobileNumber}`
+    );
+    client.messages
+    .create({
+      body: `\nWelcome to Snappy:A Complete Grocery Store\nYour Verification Code is ${OTP} `,
+      from: "+19412567246",
+      to: mobileNumber,
+    })
+    .then((message) => console.log(message.sid)); 
+  
+    finduser(mobileNumber, (err, userResult) => {
+      if (err) {
+        console.error("Error finding user: ", err);
+        return res.status(500).json({ error: err.message, verificationStatus: false });
+      }
+
+      if (userResult && userResult.length > 0) {
+        console.log("User is already a customer", userResult[0].custId);
+        uuid = userResult[0].custId;
+      } else {
+        uuid = uuidv4(); // Define uuidv4 function
+      }
+
+      res.status(200).json({ verificationStatus: true });
+    });
+  } catch (error) {
+    console.log("Error ! ",error);
+    res.status(500).json({ error: error.message, verificationStatus: false });
+  }
+});
 
 app.post("/verifyOTP", (req, res) => {
   userOTP = req.body.InputOTP;
-
+  console.log("UserResult",userResult);
   try {
     if (userOTP == OTP) {
       if (userResult) {
@@ -69,108 +124,50 @@ app.post("/verifyOTP", (req, res) => {
   }
 });
 
-const finduser = (mobileNumber, callback) => {
-  // Select all data from the customer_profile table
-  const selectQuery = `SELECT * FROM customer_profile where custPhoneNumber = '${mobileNumber}'`;
-  
-  connection.query(selectQuery, (err, results, fields) => {
-    userResult = results
-    if (err) {
-      console.error("Error retrieving data: ", err);
-      callback(err, null);
-      return;
-    }
-    callback(null, results);
-  });
-};
-
-app.post("/sendOtp", (req, res) => {
-  mobileNumber = req.body.MobileNumber;
-  OTP = generate_otp();
-
-  try {
-    console.log(
-      `/sendOTP api and The OTP has been sent is ${OTP} on ${mobileNumber}`
-    );
-    client.messages
-      .create({
-        body: `\nWelcome to Snappy:A Complete Grocery Store\nYour Verification Code is ${OTP} `,
-        from: "+19412567246",
-        to: mobileNumber,
-      })
-      .then((message) => console.log(message.sid));
-
-    // Here Also Check and return if user is alredy customer or not
-    finduser(mobileNumber, (err, userResult) => {
-      if (err) {
-        console.error("Error finding user: ", err);
-        return res
-          .status(500)
-          .json({ error: err.message, verficationStatus: false });
-      }
-
-      if (userResult && userResult.length > 0) {
-        userResult = userResult
-        console.log("User is alredy customer",userResult[0].custId);
-        uuid = userResult[0].custId;
-      } else {
-        uuid = uuidv4();
-      }
-
-      res.status(200).json({ verficationStatus: true });
-    });
-  } catch (error) {
-    console.log("Error ! ");
-    res.status(500).json({ error: error.message, verficationStatus: false });
-  }
-});
-
 app.post("/register/user", (req, res) => {
-  // This API Store the User Name and Password
-
-  // Data to be inserted
   const data = {
-    custId: uuid,
+    custId: uuidv4(), // Define uuidv4 function
     custName: req.body.custName,
     custAddress: req.body.custAddress,
     custPhoneNumber: mobileNumber,
   };
 
-  const insertQuery = "INSERT INTO customer_profile SET ?";
-  connection.query(insertQuery, data, (err, results) => {
-    if (err) {
+  const usersRef = collection(db, "customer_profiles");
+  const docRef = doc(usersRef); 
+  setDoc(docRef, data)
+    .then(() => {
+      console.log("Data inserted successfully");
+      res.status(200).json({ verificationStatus: true, custId: data.custId, cust: data });
+    })
+    .catch((err) => {
       console.error("Error inserting data: ", err);
-      return res
-        .status(500)
-        .json({ error: err.message, verficationStatus: false });
+      res.status(500).json({ error: err.message, verificationStatus: false });
+    });
+});
+app.post('/getuserdetail', async (req, res) => {
+  const customerId = req.body.custId;
+  try {
+    const usersRef = collection(db, "customer_profiles");
+    const queryRef = query(usersRef, where("custId", "==", customerId));
+
+    const querySnapshot = await getDocs(queryRef);
+    if (querySnapshot.empty) {
+      console.log("No matching documents.");
+      res.status(404).json({ verficationStatus: false, cust: undefined });
+      return;
     }
-    console.log("Data inserted successfully");
-    res.status(200).json({ verficationStatus: true, custId: uuid,cust:data});
-  });
+
+    const results = [];
+    querySnapshot.forEach((doc) => {
+      results.push(doc.data());
+    });
+    res.status(200).json({ verficationStatus: true, cust: results });
+  } catch (error) {
+    console.error("Error retrieving data: ", error);
+    res.status(500).json({ verficationStatus: false, cust: undefined });
+  }
 });
 
-app.post('/getuserdetail',(req,res)=>{
-  const customerId = req.body.custId;
-  console.log("home page customer id",customerId);
-  try {
-    const selectQuery =  `SELECT * FROM customer_profile where custId = '${customerId}'`;
-    connection.query(selectQuery, (err, results, fields) => {
-      userResult = results
-      if (err) {
-        console.error("Error retrieving data: ", err);
-        callback(err, null);
-        return;
-      }
-      console.log("result is ",results);
-      res.status(200).json({ verficationStatus: true,cust: results});
-    });
-  } catch (error) {
-    console.log(`151 app.js Error Message ${error.message}`);
-    res.status(200).json({ verficationStatus: true, cust:undefined});
-  }
-
-
-})
-app.listen(3939, () => {
-  console.log("Server is Listenning on port number 3939");
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
