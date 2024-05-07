@@ -99,3 +99,23 @@ backdrop-filter: blur(10px);
   font-weight: bolder;
   color: white;
 }
+.searchsuggetion{
+  position: absolute;
+  top: 90%;
+  left: 30%;
+  border: 1px rgb(163, 163, 163) solid;
+  background-color: white;
+  width: 350px;
+  padding: 5px;
+  overflow: auto;
+}
+.searchsuggestionitem{
+  width: 90%;
+  font-weight: 500;
+  color: rgb(88, 88, 88);
+  border-radius: 5px;
+  &:hover{
+    background-color: #e8e8e8;
+    color: black;
+  }
+}

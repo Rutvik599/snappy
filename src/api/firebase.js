@@ -12,4 +12,4 @@ const firebaseConfig = {
   };
 
 firebase.initializeApp(firebaseConfig);
-
+const db = getFirestore(firebaseApp);

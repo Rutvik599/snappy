@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../style/Header.css";
+import { v4 as uuidv4 } from 'uuid';
 import {
   ChevronDown,
   MapPin,
@@ -8,9 +9,10 @@ import {
   ShoppingCart,
   X,
 } from "lucide-react";
-import getCustomerDetail from "F:/Practical/snappy/src/api/getcustomer.js";
+import getCustomerDetail from "../api/getcustomer.js";
+import { products } from "../utils/products.js";
 import logo from "../Products-Images/snappy.png";
-import { toggleLoginStatus } from "../api/islogin";
+import { toggleLoginStatus,setCust, setCustId, getCustInfo} from "../api/islogin";
 import { useNavigate } from "react-router-dom";
 import AlertBox from "./Alertbox";
 
@@ -23,6 +25,9 @@ export default function Header() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [searchitem, setSearchitem] = useState("");
+
+
+
   const fetchCustomerData = async (custId) => {
     const data = await getCustomerDetail(custId);
     const extractedData = data.cust.map(
@@ -36,10 +41,9 @@ export default function Header() {
     setName(extractedData[0]?.custName);
     setaddress(extractedData[0]?.custAddress);
     if (data && data.verificationStatus) {
-      const cust = data.cust[0]; // Assuming the response contains an array of customers
+      const cust = data.cust[0]; 
       setName(cust.custName);
       setaddress(cust.custAddress);
-      console.log(address);
     }
   };
 
@@ -91,7 +95,6 @@ export default function Header() {
   const handleCloseAlert = () => {
     setShowAlert(false);
   };
-
   const showalert = () => {
     setShowAlert(true);
     setTimeout(() => {
@@ -99,6 +102,26 @@ export default function Header() {
     }, 2000);
   };
 
+  const gotoChatCart = (url)=>{
+    if(url === 1){
+      const chatid = uuidv4();
+      navigate(`feature/chatbot/${chatid}`);
+    }
+  }
+  const filteredProductNames =
+    searchitem.trim() === ""
+      ? []
+      : products.flatMap((category) =>
+          category.items
+            .filter((item) =>
+              item.name.toLowerCase().includes(searchitem.toLowerCase())
+            )
+            .map((item) => item.name)
+        );
+  const searchproduct = (str) =>{
+    navigate(`searchResult/${str}`);
+    setSearchitem("");
+  }
   return (
     <>
       {showAlert && (
@@ -114,7 +137,7 @@ export default function Header() {
             src={logo}
             alt=""
             className="headerlogo"
-            onClick={() => navigate('/')}
+            onClick={() => navigate("/")}
           />
           <div className="location">
             <MapPin size={15} /> <span className="locationtext">{address}</span>
@@ -134,9 +157,19 @@ export default function Header() {
               />
             </span>
           </button>
+          {searchitem.trim() !== "" && (
+            <div className="searchsuggetion">
+              {filteredProductNames &&
+                filteredProductNames.map((productName, index) => (
+                  <li key={index} className="searchsuggestionitem" onClick={()=>searchproduct(productName)}>
+                    {productName}
+                  </li>
+                ))}
+            </div>
+          )}
         </div>
         <div className="sidebar">
-          <button className="chatbot" onClick={showalert}>
+          <button className="chatbot" onClick={()=>gotoChatCart(1)}>
             <MessageSquare size={20} />{" "}
             <span className="chatbottext">Chatbot</span>
           </button>

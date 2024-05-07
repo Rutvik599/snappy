@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../style/Login.css"; // Import CSS file with corrected path
 import { useNavigate } from "react-router-dom";
 import { isLogin, toggleLoginStatus,setCust} from "../api/islogin";
-import logo from "F:/Practical/snappy/src/Products-Images/logo.png"
+import logo from "../Products-Images/logo.png"
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import OtpInput from "react-otp-input";

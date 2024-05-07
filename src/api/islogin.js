@@ -1,5 +1,5 @@
 let isLogin = false;
-let custId = "";
+let custId ;
 let cust
 
 
@@ -12,7 +12,7 @@ const setCust =(value)=>{
   cust = value;
 }
 const getValue = () =>{
-  return [custId,cust];
+  return [cust];
 }
 
-export { isLogin, toggleLoginStatus,getValue,setCust};
+export { isLogin, toggleLoginStatus,getValue,setCust ,cust};

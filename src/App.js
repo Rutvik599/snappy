@@ -5,18 +5,19 @@ import Login from "./Pages/Login";
 import Product from "F:/Practical/snappy/src/Component/Product.jsx";
 import '@radix-ui/themes/styles.css';
 import Searchcard from "./Component/Searchcard";
+import Otherpage from "./Pages/Otherpage";
+import Chatbot from "./Pages/Chatbot";
 
 function App() {
-  
-
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Homepage/>}>
-        <Route path="/category/:categoryname" element={<Product />} />
+        <Route path="category/:categoryname" element={<Product />} />
         <Route path="searchResult/:searchParam" element={<Searchcard />} />
         </Route>
         <Route path="/login" element={<Login />} />
+       <Route path="/feature/*" element={<Otherpage/>} />
        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

@@ -1,7 +1,8 @@
 const express = require("express");
 const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, getDocs, setDoc, doc, query, where } = require("firebase/firestore/lite");
+const { getFirestore, collection, getDocs,getDoc, setDoc, doc, query, where } = require("firebase/firestore/lite");
 const cors = require("cors");
+const generateContent = require('./gemini.js'); 
 const bodyparser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
 const app = express();
@@ -167,6 +168,79 @@ app.post('/getuserdetail', async (req, res) => {
     res.status(500).json({ verficationStatus: false, cust: undefined });
   }
 });
+
+app.post('/getchatResult', async (req, res) => {
+  const userPrompt = req.body.userPrompt;
+  const userchatUUID = req.body.uuid;
+  const userId = req.body.userid;
+
+  try {
+      const result = await generateContent(userPrompt);
+      const chatRef = doc(collection(db, 'chatbot', userId, userchatUUID));
+      await setDoc(chatRef, {
+          userPrompt: userPrompt,
+          result: result
+      });
+
+      res.status(200).json({ verificationStatus: true, result: result });
+  } catch (error) {
+      console.error("Error processing chat result:", error);
+      res.status(500).json({ verificationStatus: false, error: error.message });
+  }
+});
+
+
+app.post('/getChat', async (req, res) => {
+  
+  const userId = req.body.userId;
+  const chatId = req.body.chatId;
+  try {
+    // Assuming you have access to your Firestore instance
+    const chatRef = collection(db, 'chatbot', userId, chatId);
+    const chatSnapshot = await getDocs(chatRef);
+
+    const chatHistory = [];
+
+    chatSnapshot.forEach((doc) => {
+      const { result, userPrompt } = doc.data(); // Retrieve result and userPrompt fields
+      chatHistory.push({ result, userPrompt }); // Push to chat history array
+    });
+
+    res.status(200).json({ chatHistory });
+  } catch (error) {
+    console.error("Error fetching chat history:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post('/getAvailableChats', async (req, res) => {
+  const userId = req.body.userId;
+  
+  try {
+    // Get the reference to the chatbot collection
+    const chatbotRef = collection(db, 'chatbot');
+    
+    // Query for documents where userId is equal to the provided userId
+    const queryRef = query(chatbotRef, where('userId', '==', userId));
+    // Execute the query
+    const querySnapshot = await getDocs(queryRef);
+    console.log(querySnapshot);
+
+    // Extract chat IDs from the snapshot
+    const chatIds = [];
+    querySnapshot.forEach((doc) => {
+      chatIds.push(doc.id);
+    });
+
+    // Respond with the chat IDs
+    res.status(200).json({ chatIds });
+  } catch (error) {
+    console.error("Error fetching chat IDs:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
