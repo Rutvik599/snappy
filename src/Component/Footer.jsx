@@ -1,7 +1,8 @@
-import React from 'react'
+import React  from 'react'
 import '../style/Footer.css';
 import logo from "../Products-Images/logo.png";
 import { ArrowDownLeft, Bird, CircleHelp, Copyright, Github, Headset, Mail, UserRoundCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 export default function Footer() {
   return (
     <>
@@ -9,13 +10,13 @@ export default function Footer() {
     <div className='mainfooter'>
       <img src={logo} alt="" className="headerlogo" onClick={()=>window.location.reload()}/>
       <div className="links">
-      <button><UserRoundCheck size={20}/><span className="text">AboutUs</span></button>
-<button><Headset size={20}/><span className="text">ContactUs</span></button>
-<button className='faq'><CircleHelp size={20}/><span className="text">FAQ's</span></button>
-<button><ArrowDownLeft size={20}/><span className="text">Feedback</span></button>
-<button><Github size={20}/><span className="text">Sourcode</span></button>
-<button><Mail size={20}/><span className="text">Gmail</span></button>
-<button><Bird size={20}/><span className="text">Team Snappy</span></button>
+      <a><UserRoundCheck size={20}/><span className="text">AboutUs</span></a>
+<a><Headset size={20}/><span className="text">ContactUs</span></a>
+<a className='faq'><CircleHelp size={20}/><span className="text">FAQ's</span></a>
+<a><ArrowDownLeft size={20}/><span className="text">Feedback</span></a>
+<a href="https://github.com/Rutvik599/snappy" target='_blank'><Github size={20} /><span className="text">Sourcode</span></a>
+<a><Mail size={20}/><span className="text">Gmail</span></a>
+<Link to='/teamsnappy'><Bird size={20}/><span className="text">Team Snappy</span></Link>
       </div>
     </div>
 <div className="line"></div>

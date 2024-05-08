@@ -7,6 +7,7 @@ import '@radix-ui/themes/styles.css';
 import Searchcard from "./Component/Searchcard";
 import Otherpage from "./Pages/Otherpage";
 import Chatbot from "./Pages/Chatbot";
+import Teamsnappy from "./Pages/Teamsnappy";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route exact path="/" element={<Homepage/>}>
         <Route path="category/:categoryname" element={<Product />} />
         <Route path="searchResult/:searchParam" element={<Searchcard />} />
+        <Route path="/teamsnappy" element={<Teamsnappy/>} />
         </Route>
         <Route path="/login" element={<Login />} />
        <Route path="/feature/*" element={<Otherpage/>} />

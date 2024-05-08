@@ -29,7 +29,7 @@
     justify-content: space-evenly;
 }
 
-.links button{
+.links a{
     display: flex;
     font-family: roboto;
     font-size: 15px;

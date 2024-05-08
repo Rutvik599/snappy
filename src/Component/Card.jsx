@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../style/Card.css";
 import { ChevronDown, ChevronUp, IndianRupee, ShoppingCartIcon, Star } from "lucide-react";
 
@@ -12,7 +12,20 @@ export default function Card(props) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeprice, setActivePrice] = useState(price);
   const [activeunit, setActiveUnit] = useState(`${quantity}${unit}`);
+  const cardRef = useRef(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -25,7 +38,7 @@ export default function Card(props) {
 
   return (
     <>
-      <div className="maincard">
+      <div className="maincard" ref={cardRef}>
         <img src={image} alt="" className="productimage" />
         <div className="details">
           <div className="headerdetails">
