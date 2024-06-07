@@ -1,0 +1,48 @@
+.chatbotdiv{
+    position: fixed; 
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  width: 100%;
+}
+.cardTag{
+    width: 50%;
+    font-size: 30px;
+    letter-spacing: 3px;
+    font-family: Courier, monospace;
+    font-weight: 400;
+    color: #5977c3;
+    margin: 10px;
+}
+.mainOrderDiv{
+    border: 1px solid #5977c3;
+    border-radius: 10px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 5px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.mainOrderDiv h1{
+    font-size: 22px;
+    margin: 10px;
+}
+.mainOrderDiv kbd{
+    color: #5977c3;
+    font-weight: 500;
+}
+.inOrder{
+    display: flex;
+    flex-direction: row;
+}
+.mainOrderDiv h2{
+    font-size: medium;
+    color: black;
+    margin: 10px;
+}

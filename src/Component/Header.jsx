@@ -3,6 +3,7 @@ import "../style/Header.css";
 import { v4 as uuidv4 } from 'uuid';
 import {
   ChevronDown,
+  LogOut,
   MapPin,
   MessageSquare,
   Search,
@@ -25,9 +26,9 @@ export default function Header() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAlert, setShowAlert] = useState(false);
   const [searchitem, setSearchitem] = useState("");
-
-
-
+  const [userId,setuserId] = useState(''); 
+  const [showProfile,setshowProfile] = useState(false);
+  const [mobilenumber,setMobilenumber] = useState('');
   const fetchCustomerData = async (custId) => {
     const data = await getCustomerDetail(custId);
     const extractedData = data.cust.map(
@@ -40,10 +41,14 @@ export default function Header() {
     );
     setName(extractedData[0]?.custName);
     setaddress(extractedData[0]?.custAddress);
+    setuserId(extractedData[0]?.custId);
+    setMobilenumber(extractedData[0]?.custPhoneNumber);
     if (data && data.verificationStatus) {
       const cust = data.cust[0]; 
       setName(cust.custName);
       setaddress(cust.custAddress);
+      setuserId(cust.custId);
+      setMobilenumber(cust.custPhoneNumber);
     }
   };
 
@@ -107,6 +112,13 @@ export default function Header() {
       const chatid = uuidv4();
       navigate(`feature/chatbot/${chatid}`);
     }
+    if(url === 2 && userId){
+      navigate(`feature/cart/${userId}`);
+    }
+
+    if(url === 3 && userId){
+      navigate(`feature/myorders/${userId}`);
+    }
   }
   const filteredProductNames =
     searchitem.trim() === ""
@@ -122,6 +134,19 @@ export default function Header() {
     navigate(`searchResult/${str}`);
     setSearchitem("");
   }
+
+  const logoutUser = () => {
+    const cookies = document.cookie.split(";").map(cookie => cookie.trim());
+    cookies.forEach(cookie => {
+      const [cookieName] = cookie.split("=");
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+  
+   navigate('/login');
+  };
+  
+
+
   return (
     <>
       {showAlert && (
@@ -174,19 +199,34 @@ export default function Header() {
             <span className="chatbottext">Chatbot</span>
           </button>
 
-          <button className="cart">
+          <button className="cart" onClick={()=>gotoChatCart(2)}>
             <ShoppingCart size={20} />{" "}
-            <span className="carttext" onClick={showalert}>
+            <span className="carttext">
               Cart
             </span>
           </button>
 
           <div className="separator"></div>
-          <button className="userbutton" onClick={showalert}>
+          <button className="userbutton" onClick={()=>setshowProfile(!showProfile)} title={name}>
             {name.charAt(0)}
           </button>
         </div>
       </div>
+      {showProfile && <div className="profile-container">
+      <button className="close-button" onClick={()=>setshowProfile(!showProfile)}>
+        <X size={24} />
+      </button>
+      <div className="showProfile">
+        <h1 className="name">{name}</h1>
+        <h3 className="mobilenumber">{mobilenumber}</h3>
+        <div className="divider1"></div>
+        <h2 className="h2tag" onClick={()=>gotoChatCart(3)}>My Orders</h2>
+        <h2 className="h2tag">Wishlist</h2>
+        <h2 className="h2tag">Saved Address</h2>
+        <h2 className="h2tag">Customer Support</h2>
+        <h2 className="logout" onClick={()=>{logoutUser()}}>Log out <LogOut style={{marginLeft:'5px'}} size={15}/></h2>
+      </div>
+    </div>}
     </>
   );
 }

@@ -6,7 +6,6 @@ import Product from "F:/Practical/snappy/src/Component/Product.jsx";
 import '@radix-ui/themes/styles.css';
 import Searchcard from "./Component/Searchcard";
 import Otherpage from "./Pages/Otherpage";
-import Chatbot from "./Pages/Chatbot";
 import Teamsnappy from "./Pages/Teamsnappy";
 
 function App() {

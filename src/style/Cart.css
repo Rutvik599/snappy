@@ -1,0 +1,100 @@
+.chatbotdiv{
+    position: fixed; 
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  width: 100%;
+}
+
+
+.cartProductmain{
+    width: 50%;
+    height: auto;
+    max-height: 350px;
+    border: 1px solid #5977c3; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(107, 107, 107, 0.1); 
+    padding: 20px; 
+    overflow: auto;
+}
+.cartProduct{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #5977c3;
+}
+
+.cartProduct img{
+    width: 180px;
+    aspect-ratio: 3/2;
+    padding:0px 20px 5px 0px;
+    margin: 0px 0px 10px 0px;
+}
+
+.detail{
+    flex: 0 0 65%;
+}
+.productName{
+    font-family: 'Courier New';
+    font-weight: bold;
+    font-size: larger;
+}
+.totalWeight{
+    font-family: Courier, monospace;
+    font-weight: bold;
+}
+
+.cartTag{
+    width: 50%;
+    font-size: 30px;
+    letter-spacing: 3px;
+    font-family: Courier, monospace;
+    font-weight: 400;
+    color: #5977c3;
+    margin-bottom: 10px;
+}
+.buttoncart{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.backbuttoncart,.totalBill,.buttonPay{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+.buttonPay{
+    background-color: transparent;
+    border: 1px solid #5977c3;
+    border-radius: 10px;
+    padding: 10px 20px 10px 20px;
+    transition: all 0.5s ease;
+    &:hover{
+        background-color: #5977c3;
+        color: white;
+        border-radius: 0px;
+    }
+}
+.totalBill{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+    letter-spacing: 2px;
+    border-radius: 5px;
+    width: 250px;
+    background-color: #5977c3;
+    color: white;
+}
+
+.purchasenow{
+    font-size: 35px;
+    letter-spacing: 2px;
+    font-family: 'Courier New', Courier, monospace;
+}

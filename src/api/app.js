@@ -4,11 +4,14 @@ const { getFirestore, collection, getDocs,getDoc, setDoc, doc, query, where } = 
 const cors = require("cors");
 const generateContent = require('./gemini.js'); 
 const bodyparser = require("body-parser");
+
+const stripe = require("stripe")("sk_test_51PP1h8RuEUCS1SjOxqVOrPPSlvwz0DvuzOYyyosQXU6q0Js1K29khTejH8JXNJqLtwmtSNT0LlkF70MT0EznUhau00xECeJ3iN");
 const { v4: uuidv4 } = require("uuid");
 const app = express();
 const port = 3939;
 app.use(cors());
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
 var OTP = "";
 var mobileNumber = "";
 var userOTP;
@@ -217,22 +220,14 @@ app.post('/getAvailableChats', async (req, res) => {
   const userId = req.body.userId;
   
   try {
-    // Get the reference to the chatbot collection
     const chatbotRef = collection(db, 'chatbot');
-    
-    // Query for documents where userId is equal to the provided userId
     const queryRef = query(chatbotRef, where('userId', '==', userId));
-    // Execute the query
     const querySnapshot = await getDocs(queryRef);
     console.log(querySnapshot);
-
-    // Extract chat IDs from the snapshot
     const chatIds = [];
     querySnapshot.forEach((doc) => {
       chatIds.push(doc.id);
     });
-
-    // Respond with the chat IDs
     res.status(200).json({ chatIds });
   } catch (error) {
     console.error("Error fetching chat IDs:", error);
@@ -240,7 +235,83 @@ app.post('/getAvailableChats', async (req, res) => {
   }
 });
 
+app.post("/create-payment-intent", async (req, res) => {
+  try {
+    const { totalBill } = req.body;
+    console.log(totalBill);
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: (totalBill * 100),
+      currency: "inr",
+      description: "Snappy Purchase",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
 
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: error.message });
+  }
+});
+
+const generateCartId = () => {
+  // Generate a random 5-digit cart ID
+  return Math.floor(10000 + Math.random() * 90000).toString();
+};
+
+const generateFormattedDate = () => {
+  const today = new Date();
+  const day = String(today.getDate()).padStart(2, '0');
+  const month = String(today.getMonth() + 1).padStart(2, '0'); // January is 0
+  const year = today.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+app.post('/storeCartValue', async (req, res) => {
+  try {
+      const { userId, cartData , totalBill } = req.body;
+      const cartId = generateCartId();
+      const date = generateFormattedDate();
+      const cartDetail = cartData.map(item => ({
+          productId: item.productId,
+          weight: item.weight
+      }));
+
+      const orderData = { 
+              cartDetail: cartDetail,
+              date: date,
+              totalBill:totalBill
+      };
+      const collectionRef = collection(db, `Orderdetail/${userId}/cart`);
+      const docRef = doc(collectionRef);
+
+      await setDoc(docRef, orderData);
+      res.status(200).json({ message: "Cart data stored successfully", orderData });
+  } catch (error) {
+      console.error('Error storing cart data:', error);
+      res.status(500).json({ error: 'Failed to store cart data. Please try again.' });
+  }
+});
+
+app.post('/getCartData', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const collectionRef = collection(db, `Orderdetail/${userId}/cart`);
+    const querySnapshot = await getDocs(collectionRef);
+
+    const cartData = [];
+    querySnapshot.forEach(doc => {
+      cartData.push({ cartId: doc.id, ...doc.data() });
+    });
+    res.status(200).json({ cartData });
+  } catch (error) {
+    console.error('Error fetching cart data:', error);
+    res.status(500).json({ error: 'Failed to fetch cart data. Please try again.' });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);

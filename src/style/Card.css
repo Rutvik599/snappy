@@ -103,5 +103,34 @@ li{
   color: #ffffff;
   }
 }
-
-
+.quantity-selector {
+    padding: 10px;
+    width: 200px;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 6px;
+    border: 1px #6785d1 solid;
+  }
+  
+  .quantity-button {
+    flex: 1; 
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+  }
+  
+  .quantity-selector button:first-child {
+    justify-content: start;
+    cursor: pointer;
+  }
+  
+  .quantity-selector button:last-child {
+    justify-content: end;
+    cursor: pointer;
+  }
+  

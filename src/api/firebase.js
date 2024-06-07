@@ -1,6 +1,6 @@
-const firebase = require("firebase/app");
-require("firebase/database");
-
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
     apiKey: "AIzaSyDDkePY0ED_CE-icYTI4Sz_i9s1CRbkDWA",
     authDomain: "snappy-website-1f783.firebaseapp.com",
@@ -11,5 +11,8 @@ const firebaseConfig = {
     measurementId: "G-GQLJSHTNRC"
   };
 
-firebase.initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+  const app = getApps.length > 0 ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const firestore = getFirestore(app);
+  
+  export { app, auth, firestore };
